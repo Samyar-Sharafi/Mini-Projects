@@ -39,7 +39,16 @@ console = Console()
 
 def login():
     global Name
-    Name, Password = "Samyar", ""
+
+    # ---load user info---#
+    try:
+        with open("user.txt", "r", encoding="utf-8") as f:
+            lines = f.readlines()
+            Name = lines[0].strip() if len(lines) > 0 else "default(PASSWORD IS EMPTY STRING)"
+            Password = lines[1].strip() if len(lines) > 1 else ""
+    except FileNotFoundError:
+        Name, Password = "default(PASSWORD IS EMPTY STRING)", ""
+    # ---load user info---end#
     rich_print(f"[bold cyan]UserName: {Name}[/bold cyan]")
     wrong_password_count = 0
 
@@ -57,6 +66,10 @@ def login():
 [/bold green]
 """
             )
+            # ---save user info---#
+            with open("user.txt", "w", encoding="utf-8") as f:
+                f.write(f"{Name}\n{Password}\n")
+            # ---save user info---end#
             return True, Name  # Return both success and username
         else:
             wrong_password_count += 1
@@ -77,8 +90,12 @@ def login():
 
 # ---login---<code--->end#
 
+#---logout---<code>#
+def logout():
+    login()
 
-# ---fileM---<code>#
+# ---logout---end#
+
 # ---fileM---<code>#
 def create_file():
     """Create a new empty file using subprocess, with colored output for status."""
@@ -95,13 +112,12 @@ def create_file():
     else:
         full_path = str(filename)
     if os_name == "nt":
-        cmd = f'type nul > "{full_path}"'
+        cmd = f"type nul > \"{full_path}\""
     else:
-        cmd = f'touch "{full_path}"'
+        cmd = f"touch \"{full_path}\""
     result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
     if result.returncode == 0:
-        rich_print(
-            f"[green]File '{full_path}' created successfully via subprocess.[/green]")
+        rich_print(f"[green]File \"{full_path}\" created successfully via subprocess.[/green]")
     else:
         rich_print(f"[red]Subprocess error: {result.stderr}[/red]")
 
@@ -115,7 +131,7 @@ def delete_file():
     try:
         remove(removing_file)
         rich_print(
-            f"[green]File '{removing_file}' deleted successfully.[/green]")
+            f"[green]File \"{removing_file}\" deleted successfully.[/green]")
     except Exception as e:
         rich_print(f"[red]Error deleting file: {e}[/red]")
 
@@ -183,8 +199,6 @@ def Isearch_search():
         rich_print(f"[bold green]{title}[/bold green]")
         rich_print(f"[blue]{link}[/blue]\n")
         print("\n" * 2)
-
-
 # ---Isearch---<code--->
 
 
@@ -193,8 +207,8 @@ def main():
     global Name
     while True:
         prompt = (
-            f"[bold green]{Name}[/bold green]---> [yellow]{time.strftime('%Y-%m-%d')}[/yellow] , "
-            f"[cyan]{time.strftime('%H:%M:%S')}[/cyan]\n[magenta]>>> [/magenta]"
+            f"[bold green]{Name}[/bold green]---> [yellow]{time.strftime("%Y-%m-%d")}[/yellow] , "
+            f"[cyan]{time.strftime("%H:%M:%S")}[/cyan]\n[magenta]>>> [/magenta]"
         )
         console.print(prompt, end="")
         user_input = input()
@@ -268,9 +282,36 @@ def main():
         # ---user rename---#
         if user_input == "rename":
             Name = input("What username you want to rename to?")
-            return Name
-
+            # ---save user info after rename---#
+            try:
+                with open("user.txt", "r", encoding="utf-8") as f:
+                    lines = f.readlines()
+                Password = lines[1].strip() if len(lines) > 1 else ""
+            except FileNotFoundError:
+                Password = ""
+            with open("user.txt", "w", encoding="utf-8") as f:
+                f.write(f"{Name}\n{Password}\n")
+            # ---save user info after rename---end#
+            rich_print(f"[green]Username changed to: {Name}[/green]")
         # ---user rename---<end>
+
+
+        #---password change---#
+        if user_input == "password change":
+            new_password = input("Enter new password: ")
+            # ---save user info after password change---#
+            try:
+                with open("user.txt", "r", encoding="utf-8") as f:
+                    lines = f.readlines()
+                Name = lines[0].strip() if len(lines) > 0 else ""
+                Password = new_password
+            except FileNotFoundError:
+                rich_print("[red]Sorry, password change didn't work...[/red]")
+            with open("user.txt", "w", encoding="utf-8") as f:
+                f.write(f"{Name}\n{Password}\n")
+            # ---save user info after password change---end#
+            rich_print("[green]Password changed successfully.[/green]")
+        # ---password change---end#
 
         # ---cmd mode---#
         if user_input == "cmd":
@@ -295,28 +336,28 @@ def main():
 
 fileM: opens file manager app__________.______.
                                        |      |
-create:creates file using user input.<-'      |
+create:creates file using user input.<-"      |
                                               |
-delete: deletes file using user input.<-------'
+delete: deletes file using user input.<-------"
 
 cal: opens calculator app______________.______.____._______.
                                        |      |    |       |
-+ : addition (e.g., 5+3) <-------------'      |    |       |
-- : subtraction (e.g., 10-2) <----------------'    |       |
-* : multiplication (e.g., 4*7) <-------------------'       |
-/ : division (e.g., 8/2) <---------------------------------'
++ : addition (e.g., 5+3) <-------------"      |    |       |
+- : subtraction (e.g., 10-2) <----------------"    |       |
+* : multiplication (e.g., 4*7) <-------------------"       |
+/ : division (e.g., 8/2) <---------------------------------"
 
 Isearch: opens the Isearch app___________________.
                                                  |
-search:  searches for files using user input.<---'
+search:  searches for files using user input.<---"
 
 cmd___________________________________________________________.____________.______
                                                               |            |     |
-opens the command line interface. [golden]|[/golden] Windows<-'            |     |
+opens the command line interface. [golden]|[/golden] Windows<-"            |     |
                                                                            |     |
-opens the MacOS terminal. [golden]|[/golden] MacOS<----------------'     |
+opens the MacOS terminal. [golden]|[/golden] MacOS<----------------"     |
                                                                                  |
-opens the linux terminal. [golden]|[/golden] Linux<------------------------------'
+opens the linux terminal. [golden]|[/golden] Linux<------------------------------"
 
 
 
@@ -337,7 +378,7 @@ Use "fileM" to manage files (create or delete).
         if user_input == "exit":
             for i in range(4):
                 rich_print(
-                    f'[bold yellow]Exiting the console{"." * i}{" " * (3 - i)}[/bold yellow]',
+                    f"[bold yellow]Exiting the console{"." * i}{" " * (3 - i)}[/bold yellow]",
                     end="\r",
                 )
                 time.sleep(0.5)
