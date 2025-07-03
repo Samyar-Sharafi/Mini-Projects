@@ -187,7 +187,7 @@ def Isearch_search():
     results = []
     for result in soup.find_all("a", class_="result__a", limit=10):
         title = result.get_text(strip=True)
-        link = result.get("href")
+        link = result.get("href") # type: ignore
         if title and link:
             results.append((title, link))
     if not results:
@@ -208,8 +208,7 @@ def main():
     while True:
         prompt = (
             f"[bold green]{Name}[/bold green]---> [yellow]{time.strftime("%Y-%m-%d")}[/yellow] , "
-            f"[cyan]{time.strftime("%H:%M:%S")}[/cyan]\n[magenta]>>> [/magenta]"
-        )
+            f"[cyan]{time.strftime("%H:%M:%S")}[/cyan]\n[magenta]>>> [/magenta]")
         console.print(prompt, end="")
         user_input = input()
 
