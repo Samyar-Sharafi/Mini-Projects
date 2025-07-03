@@ -1,4 +1,6 @@
-These are a serise of small projects you could learn from and do it for yourself OR edit the codes for yourself and fix the code.
+#Mini Projects
+
+These are a serise of small projects in python that you could learn from and do it for yourself OR edit the codes for yourself and fix the code.
 
 these projects are:
 
@@ -7,6 +9,7 @@ these projects are:
 ⭕Mini Text editor
 
 ⭕Mini Godot GUIs
+
 ...
 
 IF the update was major, add one to Y:
@@ -20,3 +23,5 @@ version X.Y.X
 IF it was a small bug fix, add one to Y:
 
 version X.X.Y
+
+**OTHER LANGUGES ARE _ALLOWED_, _BUT MAKE SURE IT IS COMPATIBLE_**
